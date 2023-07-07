@@ -210,3 +210,64 @@ class TestDatetimeIndex:
         res = idx._is_dates_only
 
         tm.assert_equal(res, True)
+
+    def test__is_dates_only_midnight_one_sample_datetime_input_daily_freq(self):
+        # rule:
+        # a datetime-like input should not be regarded as a date, regardless of the frequency
+        # test case:
+        # single sample for midnight, with a daily frequency, provided as a datetime
+        # expected result:
+        # should not be a date only, despite the daily freq, because it is provided as a datetime
+        idx = DatetimeIndex(["2012-01-01 00:00:00"], freq="24T")
+
+        res = idx._is_dates_only
+
+        tm.assert_equal(res, False) 
+
+    def test__is_dates_only_midnight_one_sample_datetime_input_nondaily_freq(self):
+        # rule:
+        # a datetime-like input should not be regarded as a date, regardless of the frequency
+        # test case:
+        # single sample for midnight, with a non-daily frequency, provided as a datetime
+        # expected result:
+        # should not be a date only, because it is provided as a datetime
+        idx = DatetimeIndex(["2012-01-01 00:00:00"], freq="25T")
+
+        res = idx._is_dates_only
+
+        tm.assert_equal(res, False)
+
+    def test__is_dates_only_midnight_one_sample_date_input_daily_freq(self):
+        # rule:
+        # a date-like input should be regarded as a date, if the frequency is a multiple of days
+        # test case:
+        # single sample for midnight, with a daily frequency, provided as a date
+        # expected result:
+        # should be a date, because it is provided as a date
+        idx = DatetimeIndex(["2012-01-01"], freq="24T")
+
+        res = idx._is_dates_only
+
+        tm.assert_equal(res, True) 
+        # test case:
+        # single sample for midnight, with a two-day frequency, provided as a date
+        # expected result:
+        # should be a date, because it is provided as a date
+        idx = DatetimeIndex(["2012-01-01"], freq="2D")
+
+        res = idx._is_dates_only
+
+        tm.assert_equal(res, True) 
+
+    def test__is_dates_only_midnight_one_sample_date_input_nondaily_freq(self):
+        # rule:
+        # a date-like input should be regarded as a date, if the frequency is a multiple of days
+        # test case:
+        # single sample for midnight, with a non-daily frequency, provided as a date
+        # expected result:
+        # should be a date, because it is provided as a date
+        idx = DatetimeIndex(["2012-01-01"], freq="25T")
+
+        res = idx._is_dates_only
+
+        tm.assert_equal(res, True) 
